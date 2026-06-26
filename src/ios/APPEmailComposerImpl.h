@@ -19,16 +19,20 @@
 
 #import <MessageUI/MFMailComposeViewController.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 @interface APPEmailComposerImpl : NSObject
 
 // Checks if the mail composer is able to send mails
-- (bool) canSendMail;
+- (BOOL)canSendMail;
 // Checks if the mail composer is able to open the specified mail client
-- (bool) canOpenScheme:(NSString*)scheme;
-// Creates an mailto-url-sheme
-- (NSURL*) urlFromProperties:(NSDictionary*)props;
+- (BOOL)canOpenScheme:(NSString *)scheme;
+// Creates an mailto-url-scheme
+- (NSURL *)urlFromProperties:(NSDictionary *)props;
 // Instantiates an email composer view
-- (MFMailComposeViewController*) mailComposerFromProperties:(NSDictionary*)props
-                                                 delegateTo:(id)receiver;
+- (MFMailComposeViewController *)mailComposerFromProperties:(NSDictionary *)props
+                                                  delegateTo:(id)receiver;
 
 @end
+
+NS_ASSUME_NONNULL_END

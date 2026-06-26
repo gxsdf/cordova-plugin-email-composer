@@ -141,7 +141,7 @@ class Impl {
     private void setBody (JSONObject params, Intent draft) {
         String body       = fixLineBreaks(params.optString("body"));
         boolean isHTML    = params.optBoolean("isHtml");
-        CharSequence text = isHTML ? Html.fromHtml(body) : body;
+        CharSequence text = isHTML ? Html.fromHtml(body, Html.FROM_HTML_MODE_COMPACT) : body;
 
         draft.putExtra(Intent.EXTRA_TEXT, text);
     }

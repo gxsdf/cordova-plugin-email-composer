@@ -22,15 +22,16 @@
 #import <MessageUI/MFMailComposeViewController.h>
 #import <MobileCoreServices/MobileCoreServices.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 @implementation APPEmailComposerImpl
 
-#pragma mark -
-#pragma mark Public
+#pragma mark - Public
 
 /**
  * Checks if the mail composer is able to send mails.
  */
-- (bool) canSendMail
+- (BOOL)canSendMail
 {
     return [MFMailComposeViewController canSendMail];
 }
@@ -38,11 +39,11 @@
 /**
  * Checks if an app is available to handle the specified scheme.
  *
- * @param scheme An URL scheme, that defaults to 'mailto:
+ * @param scheme An URL scheme, that defaults to 'mailto:'
  */
-- (bool) canOpenScheme:(NSString *)scheme
+- (BOOL)canOpenScheme:(NSString *)scheme
 {
-    __block bool canOpen = false;
+    __block BOOL canOpen = NO;
     NSCharacterSet *set  = [NSCharacterSet URLFragmentAllowedCharacterSet];
 
     if (!scheme) {
@@ -76,8 +77,8 @@
  *
  * @return The configured email composer view
  */
-- (MFMailComposeViewController*) mailComposerFromProperties:(NSDictionary*)props
-                                                 delegateTo:(id)receiver
+- (MFMailComposeViewController *)mailComposerFromProperties:(NSDictionary *)props
+                                                  delegateTo:(id)receiver
 {
     BOOL isHTML = [[props objectForKey:@"isHtml"] boolValue];
 
@@ -106,13 +107,13 @@
 }
 
 /**
- * Creates an mailto-url-sheme.
+ * Creates an mailto-url-scheme.
  *
  * @param properties The email properties like subject, body, attachments
  *
- * @return The configured mailto-sheme
+ * @return The configured mailto-scheme
  */
-- (NSURL*) urlFromProperties:(NSDictionary*)props
+- (NSURL *)urlFromProperties:(NSDictionary *)props
 {
     NSString* mailto      = [props objectForKey:@"app"];
     NSMutableArray* parts = [[NSMutableArray alloc] init];
@@ -171,17 +172,16 @@
     return [NSURL URLWithString:mailto];
 }
 
-#pragma mark -
-#pragma mark Private
+#pragma mark - Private
 
 /**
- * Sets the subject of the email draft.
+ * Sets the sending email address of the email draft.
  *
- * @param subject The subject
- * @param draft   The email composer view
+ * @param from  The sender's email address
+ * @param draft The email composer view
  */
-- (void) setSendingEmailAddress:(NSString*)from
-                        ofDraft:(MFMailComposeViewController*)draft
+- (void)setSendingEmailAddress:(nullable NSString *)from
+                       ofDraft:(MFMailComposeViewController *)draft
 {
     if (@available(iOS 11.0, *)) {
         [draft setPreferredSendingEmailAddress:from];
@@ -194,8 +194,8 @@
  * @param subject The subject
  * @param draft   The email composer view
  */
-- (void) setSubject:(NSString*)subject
-            ofDraft:(MFMailComposeViewController*)draft
+- (void)setSubject:(nullable NSString *)subject
+           ofDraft:(MFMailComposeViewController *)draft
 {
     [draft setSubject:subject];
 }
@@ -207,8 +207,9 @@
  * @param isHTML Indicates if the body is an HTML encoded string.
  * @param draft  The email composer view
  */
-- (void) setBody:(NSString*)body ofDraft:(MFMailComposeViewController*)draft
-          isHTML:(BOOL)isHTML
+- (void)setBody:(nullable NSString *)body
+        ofDraft:(MFMailComposeViewController *)draft
+         isHTML:(BOOL)isHTML
 {
     [draft setMessageBody:body isHTML:isHTML];
 }
@@ -219,8 +220,8 @@
  * @param recipients The recipients
  * @param draft      The email composer view.
  */
-- (void) setToRecipients:(NSArray*)recipients
-                 ofDraft:(MFMailComposeViewController*)draft
+- (void)setToRecipients:(nullable NSArray<NSString *> *)recipients
+                ofDraft:(MFMailComposeViewController *)draft
 {
     [draft setToRecipients:recipients];
 }
@@ -231,8 +232,8 @@
  * @param ccRecipients The CC recipients
  * @param draft        The email composer view
  */
-- (void) setCcRecipients:(NSArray*)ccRecipients
-                 ofDraft:(MFMailComposeViewController*)draft
+- (void)setCcRecipients:(nullable NSArray<NSString *> *)ccRecipients
+                ofDraft:(MFMailComposeViewController *)draft
 {
     [draft setCcRecipients:ccRecipients];
 }
@@ -243,8 +244,8 @@
  * @param bccRecipients The BCC recipients
  * @param draft         The email composer view.
  */
-- (void) setBccRecipients:(NSArray*)bccRecipients
-                  ofDraft:(MFMailComposeViewController*)draft
+- (void)setBccRecipients:(nullable NSArray<NSString *> *)bccRecipients
+                 ofDraft:(MFMailComposeViewController *)draft
 {
     [draft setBccRecipients:bccRecipients];
 }
@@ -255,10 +256,10 @@
  * @param attachments The attachments
  * @param draft       The email composer view
  */
-- (void) setAttachments:(NSArray*)attatchments
-                ofDraft:(MFMailComposeViewController*)draft
+- (void)setAttachments:(nullable NSArray<NSString *> *)attachments
+               ofDraft:(MFMailComposeViewController *)draft
 {
-    if (!attatchments) return;
+    if (!attachments) return;
 
     for (NSString* path in attatchments)
     {
@@ -285,7 +286,7 @@
  *
  * @return The data for the attachment.
  */
-- (NSData*) getDataForAttachmentPath:(NSString*)path
+- (nullable NSData *)getDataForAttachmentPath:(NSString *)path
 {
     if ([path hasPrefix:@"file:///"])
     {
@@ -324,7 +325,7 @@
  *
  * @return The data for the attachment.
  */
-- (NSData*) dataForAbsolutePath:(NSString*)path
+- (nullable NSData *)dataForAbsolutePath:(NSString *)path
 {
     NSFileManager* fm = [NSFileManager defaultManager];
     NSString* absPath;
@@ -348,7 +349,7 @@
  *
  * @return The data for the attachment.
  */
-- (NSData*) dataForResource:(NSString*)path
+- (nullable NSData *)dataForResource:(NSString *)path
 {
     NSString* imgName = [[path pathComponents].lastObject
                          stringByDeletingPathExtension];
@@ -371,13 +372,13 @@
 }
 
 /**
- * Retrieves the data for a asset path.
+ * Retrieves the data for an asset path.
  *
  * @param path A relative www file path.
  *
  * @return The data for the attachment.
  */
-- (NSData*) dataForAsset:(NSString*)path
+- (nullable NSData *)dataForAsset:(NSString *)path
 {
     NSFileManager* fm = [NSFileManager defaultManager];
     NSString* absPath;
@@ -401,13 +402,13 @@
 }
 
 /**
- * Retrieves the file URL for an internal app path.
+ * Retrieves the file data for an internal app path.
  *
  * @param path A relative file path from main bundle dir.
  *
  * @return The data for the attachment.
  */
-- (NSData*) dataForAppInternalPath:(NSString*)path
+- (nullable NSData *)dataForAppInternalPath:(NSString *)path
 {
     NSFileManager* fm = [NSFileManager defaultManager];
 
@@ -430,7 +431,7 @@
  *
  * @return The data for the attachment.
  */
-- (NSData*) dataFromBase64:(NSString*)base64String
+- (nullable NSData *)dataFromBase64:(NSString *)base64String
 {
     NSUInteger length = [base64String length];
     NSRegularExpression *regex;
@@ -456,22 +457,21 @@
  *
  * @param extension The file's extension.
  *
- * @return The coresponding MIME type.
+ * @return The corresponding MIME type.
  */
-- (NSString*) getMimeTypeFromFileExtension:(NSString*)extension
+- (nullable NSString *)getMimeTypeFromFileExtension:(nullable NSString *)extension
 {
     if (!extension)
         return nil;
 
     // Get the UTI from the file's extension
-    CFStringRef ext  = (CFStringRef)CFBridgingRetain(extension);
+    CFStringRef ext  = (__bridge CFStringRef)extension;
     CFStringRef type = UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, ext, NULL);
 
     // Converting UTI to a mime type
     NSString *result = (NSString*)
     CFBridgingRelease(UTTypeCopyPreferredTagWithClass(type, kUTTagClassMIMEType));
 
-    CFRelease(ext);
     CFRelease(type);
 
     return result;
@@ -480,11 +480,11 @@
 /**
  * Retrieves the attachments basename.
  *
- * @param path The file path or bas64 data of the attachment.
+ * @param path The file path or base64 data of the attachment.
  *
  * @return The attachments basename.
  */
-- (NSString*) getBasenameFromAttachmentPath:(NSString*)path
+- (NSString *)getBasenameFromAttachmentPath:(NSString *)path
 {
     if ([path hasPrefix:@"base64:"])
     {
@@ -501,3 +501,5 @@
 }
 
 @end
+
+NS_ASSUME_NONNULL_END

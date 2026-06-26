@@ -21,13 +21,17 @@
 #import <MessageUI/MFMailComposeViewController.h>
 #import <Cordova/CDVPlugin.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 @interface APPEmailComposer : CDVPlugin <MFMailComposeViewControllerDelegate>
 
 // Shows the email composer view with pre-filled data
-- (void) open:(CDVInvokedUrlCommand*)command;
+- (void)open:(CDVInvokedUrlCommand *)command;
 // Checks if an email account is configured
-- (void) account:(CDVInvokedUrlCommand*)command;
+- (void)account:(CDVInvokedUrlCommand *)command;
 // Checks if the specified email client is installed
-- (void) client:(CDVInvokedUrlCommand*)command;
+- (void)client:(CDVInvokedUrlCommand *)command;
 
 @end
+
+NS_ASSUME_NONNULL_END

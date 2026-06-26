@@ -20,6 +20,8 @@
 #import "APPEmailComposer.h"
 #import "APPEmailComposerImpl.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 @interface APPEmailComposer ()
 
 // Reference is needed because of the async delegate
@@ -31,29 +33,25 @@
 
 @implementation APPEmailComposer
 
-@synthesize command, impl;
-
-#pragma mark -
-#pragma mark Lifecycle
+#pragma mark - Lifecycle
 
 /**
  * Initialize the core impl object which does the main stuff.
  */
-- (void) pluginInitialize
+- (void)pluginInitialize
 {
     self.impl = [[APPEmailComposerImpl alloc] init];
 }
 
-#pragma mark -
-#pragma mark Public
+#pragma mark - Public
 
 /**
  * Checks if an email account is configured.
  */
-- (void) account:(CDVInvokedUrlCommand*)cmd
+- (void)account:(CDVInvokedUrlCommand *)cmd
 {
     [self.commandDelegate runInBackground:^{
-        bool res = [self.impl canSendMail];
+        BOOL res = [self.impl canSendMail];
         CDVPluginResult* result;
 
         result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK
@@ -67,11 +65,11 @@
 /**
  * Checks if an email client is available which responds to the scheme.
  */
-- (void) client:(CDVInvokedUrlCommand*)cmd
+- (void)client:(CDVInvokedUrlCommand *)cmd
 {
     [self.commandDelegate runInBackground:^{
         NSString* scheme = [cmd argumentAtIndex:0];
-        bool res         = [self.impl canOpenScheme:scheme];
+        BOOL res         = [self.impl canOpenScheme:scheme];
         CDVPluginResult* result;
 
         result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK
@@ -85,7 +83,7 @@
 /**
  * Show the email composer view with pre-filled data.
  */
-- (void) open:(CDVInvokedUrlCommand*)cmd
+- (void)open:(CDVInvokedUrlCommand *)cmd
 {
     NSDictionary* props = cmd.arguments[0];
 
@@ -102,36 +100,36 @@
     }];
 }
 
-#pragma mark -
-#pragma mark MFMailComposeViewControllerDelegate
+#pragma mark - MFMailComposeViewControllerDelegate
 
 /**
  * Delegate will be called after the mail composer did finish an action
  * to dismiss the view.
  */
-- (void) mailComposeController:(MFMailComposeViewController*)controller
+- (void)mailComposeController:(MFMailComposeViewController *)controller
            didFinishWithResult:(MFMailComposeResult)result
-                         error:(NSError*)error
+                         error:(NSError * _Nullable)error
 {
     [controller dismissViewControllerAnimated:YES completion:NULL];
 
     switch(result) {
         case MFMailComposeResultSent:
             [self execCallback:YES];
+            break;
         case MFMailComposeResultSaved:
             [self execCallback:YES];
+            break;
         default:
             [self execCallback:NO];
     }
 }
 
-#pragma mark -
-#pragma mark Private
+#pragma mark - Private
 
 /**
  * Displays the email draft.
  */
-- (void) presentMailComposerFromProperties:(NSDictionary*)props
+- (void)presentMailComposerFromProperties:(NSDictionary *)props
 {
     dispatch_async(dispatch_get_main_queue(), ^{
         MFMailComposeViewController* draft =
@@ -146,13 +144,12 @@
                                           animated:YES
                                         completion:NULL];
     });
-
 }
 
 /**
  * Instructs the application to open the specified URL.
  */
-- (void) openURLFromProperties:(NSDictionary*)props
+- (void)openURLFromProperties:(NSDictionary *)props
 {
     NSURL* url = [self.impl urlFromProperties:props];
 
@@ -160,15 +157,15 @@
         [[UIApplication sharedApplication] openURL:url
                                            options:@{}
                                  completionHandler:^(BOOL success) {
-            [self execCallback: success];
+            [self execCallback:success];
         }];
     });
 }
 
 /**
- * If the specified app if the buil-in iMail framework can be used.
+ * If the specified app if the built-in Mail framework can be used.
  */
-- (BOOL) canUseAppleMail:(NSString*) scheme
+- (BOOL)canUseAppleMail:(NSString *)scheme
 {
     return [scheme hasPrefix:@"mailto"];
 }
@@ -176,13 +173,13 @@
 /**
  * Invokes the callback without any parameter.
  */
-- (void) execCallback {
+- (void)execCallback
+{
     [self execCallback:NO];
 }
 
-- (void) execCallback:(BOOL)success
+- (void)execCallback:(BOOL)success
 {
-    
     CDVPluginResult *result = [CDVPluginResult
                                resultWithStatus:CDVCommandStatus_OK messageAsBool:success];
 
@@ -191,3 +188,5 @@
 }
 
 @end
+
+NS_ASSUME_NONNULL_END
