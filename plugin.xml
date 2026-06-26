@@ -41,8 +41,8 @@
 
     <engines>
         <engine name="cordova" version=">=12.0.0" />
-        <engine name="cordova-android" version=">=13.0.0" />
-        <engine name="cordova-ios" version=">=8.0.0" />
+        <engine name="cordova-android" version=">=15.0.0" />
+        <engine name="cordova-ios" version=">=8.1.0" />
     </engines>
 
     <!-- interface -->
@@ -71,6 +71,8 @@
         <header-file src="src/ios/APPEmailComposerImpl.h" />
         <source-file src="src/ios/APPEmailComposerImpl.m" />
 
+        <resource-file src="src/ios/EmailComposerPrivacy.bundle" target="EmailComposerPrivacy.bundle" />
+
         <framework src="MessageUI.framework" />
         <framework src="MobileCoreServices.framework" />
     </platform>
@@ -87,13 +89,6 @@
             </intent>
         </config-file>
 
-        <config-file target="app/src/main/AndroidManifest.xml" parent="/manifest/queries">
-            <intent>
-                <action android:name="android.intent.action.SENDTO" />
-                <data android:scheme="mailto" />
-            </intent>
-        </config-file>
-
         <config-file target="config.xml" parent="/*">
             <feature name="EmailComposer">
                 <param name="android-package"
@@ -101,11 +96,7 @@
             </feature>
         </config-file>
 
-        <config-file target="config.xml" parent="/*">
-            <preference name="AndroidXEnabled" value="true" />
-        </config-file>
-
-        <config-file target="AndroidManifest.xml" parent="application">
+        <config-file target="AndroidManifest.xml" parent="/manifest/application">
             <provider
                 android:name="de.appplant.cordova.emailcomposer.Provider"
                 android:authorities="${applicationId}.emailcomposer.provider"
@@ -117,9 +108,11 @@
             </provider>
         </config-file>
 
-        <source-file
+        <resource-file
             src="src/android/xml/emailcomposer_provider_paths.xml"
-            target-dir="res/xml" />
+            target="app/src/main/res/xml/emailcomposer_provider_paths.xml" />
+
+        <framework src="androidx.core:core:1.13.1" />
 
         <source-file
             src="src/android/AssetUtil.java"

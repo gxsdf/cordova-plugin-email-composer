@@ -261,7 +261,7 @@ NS_ASSUME_NONNULL_BEGIN
 {
     if (!attachments) return;
 
-    for (NSString* path in attatchments)
+    for (NSString* path in attachments)
     {
         NSData* data = [self getDataForAttachmentPath:path];
 
