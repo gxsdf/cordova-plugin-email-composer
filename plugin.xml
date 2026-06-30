@@ -108,12 +108,12 @@
             </provider>
         </config-file>
 
-        <resource-file
-            src="src/android/xml/emailcomposer_provider_paths.xml"
-            target="app/src/main/res/xml/emailcomposer_provider_paths.xml" />
-
         <framework src="androidx.core:core:1.13.1" />
 
+        <source-file 
+            src="src/android/xml/emailcomposer_provider_paths.xml" 
+            target-dir="res/xml" />
+            
         <source-file
             src="src/android/AssetUtil.java"
             target-dir="src/de/appplant/cordova/emailcomposer" />
